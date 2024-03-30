@@ -1,11 +1,12 @@
 package com.exo.javabackend;
 
 import com.exo.javabackend.application.CalculateBillingUseCase;
+import com.exo.javabackend.domain.exception.BadRequestException;
 import com.exo.javabackend.domain.model.Client;
 import com.exo.javabackend.domain.model.ClientParticulier;
 import com.exo.javabackend.domain.model.ClientPro;
 import com.exo.javabackend.domain.model.TypeEnergie;
-import com.exo.javabackend.domain.model.dto.ClientDTO;
+import com.exo.javabackend.domain.model.dto.ClientResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ public class CalculateBillingUseCaseTests {
         client.definirConsommation(TypeEnergie.ELECTRICITE, 350.0);
         client.definirConsommation(TypeEnergie.GAZ, 150.0);
 
-        ClientDTO result = useCase.handle(client);
+        ClientResponseDTO result = useCase.handle(client);
 
         Assertions.assertEquals(client.getNom(), result.nom().get());
         Assertions.assertEquals(59.6, result.sommeTotal());
@@ -38,7 +39,7 @@ public class CalculateBillingUseCaseTests {
         ClientParticulier client = new ClientParticulier("EKW12345678", "M.", "DUPONT","Jean", consommationsInitiales);
         client.definirConsommation(TypeEnergie.ELECTRICITE, 50.0);
 
-        ClientDTO result = useCase.handle(client);
+        ClientResponseDTO result = useCase.handle(client);
         Assertions.assertEquals(6.05, result.sommeTotal());
         Assertions.assertEquals(6.05, result.montantParEnergie().get(TypeEnergie.ELECTRICITE));
     }
@@ -50,7 +51,7 @@ public class CalculateBillingUseCaseTests {
         Client client = new ClientParticulier("EKW12345678", "M.", "DUPONT","Jean", consommationsInitiales);
         client.definirConsommation(TypeEnergie.GAZ, 150.0);
 
-        ClientDTO result = useCase.handle(client);
+        ClientResponseDTO result = useCase.handle(client);
         Assertions.assertEquals(17.25, result.sommeTotal());
         Assertions.assertEquals(17.25, result.montantParEnergie().get(TypeEnergie.GAZ));
 
@@ -64,7 +65,7 @@ public class CalculateBillingUseCaseTests {
         client.definirConsommation(TypeEnergie.ELECTRICITE, 350.0);
         client.definirConsommation(TypeEnergie.GAZ, 150.0);
 
-        ClientDTO result = useCase.handle(client);
+        ClientResponseDTO result = useCase.handle(client);
         Assertions.assertEquals(client.getNumSiret(), result.numSiret().get());
         Assertions.assertEquals(58.250, result.sommeTotal());
         Assertions.assertEquals(16.95, result.montantParEnergie().get(TypeEnergie.GAZ));
@@ -80,7 +81,7 @@ public class CalculateBillingUseCaseTests {
         client.definirConsommation(TypeEnergie.ELECTRICITE, 350.0);
         client.definirConsommation(TypeEnergie.GAZ, 150.0);
 
-       ClientDTO result = useCase.handle(client);
+       ClientResponseDTO result = useCase.handle(client);
 
        Assertions.assertEquals(56.55, result.sommeTotal());
        Assertions.assertEquals(16.65, result.montantParEnergie().get(TypeEnergie.GAZ));
@@ -93,7 +94,7 @@ public class CalculateBillingUseCaseTests {
         Map<TypeEnergie, Double> consommationsInitiales = new HashMap<>();
         ClientParticulier client = new ClientParticulier("EKW1234", "M.", "DUPONT","Jean", consommationsInitiales);
 
-        var expection = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        var expection = Assertions.assertThrows(BadRequestException.class, () -> {
             useCase.handle(client);
         });
 

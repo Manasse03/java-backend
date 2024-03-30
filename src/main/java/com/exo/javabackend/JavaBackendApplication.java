@@ -1,11 +1,10 @@
 package com.exo.javabackend;
 
 import com.exo.javabackend.application.CalculateBillingUseCase;
-import com.exo.javabackend.domain.model.Client;
 import com.exo.javabackend.domain.model.ClientParticulier;
 import com.exo.javabackend.domain.model.ClientPro;
 import com.exo.javabackend.domain.model.TypeEnergie;
-import com.exo.javabackend.domain.model.dto.ClientDTO;
+import com.exo.javabackend.domain.model.dto.ClientResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -46,13 +45,13 @@ public class JavaBackendApplication implements CommandLineRunner {
         pro.definirConsommation(TypeEnergie.ELECTRICITE, 350.0);
         pro.definirConsommation(TypeEnergie.GAZ, 150.0);
 
-        ClientDTO result = calculateBillingUseCase.handle(pro);
+        ClientResponseDTO result = calculateBillingUseCase.handle(pro);
 
         System.out.println(toStringPro(result));
 
     }
 
-    private String toStringParticulier(ClientDTO dto) {
+    private String toStringParticulier(ClientResponseDTO dto) {
         return "ClientDTO{" +
                 "reference='" + dto.reference() + '\'' +
                 ", montantParEnergie=" + dto.montantParEnergie() +
@@ -63,7 +62,7 @@ public class JavaBackendApplication implements CommandLineRunner {
                 '}';
     }
 
-    private String toStringPro(ClientDTO dto) {
+    private String toStringPro(ClientResponseDTO dto) {
         return "ClientDTO-PRO{" +
                 "reference='" + dto.reference() + '\'' +
                 ", montantParEnergie=" + dto.montantParEnergie() +

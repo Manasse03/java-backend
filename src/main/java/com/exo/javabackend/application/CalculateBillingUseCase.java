@@ -1,10 +1,11 @@
 package com.exo.javabackend.application;
 
+import com.exo.javabackend.domain.exception.BadRequestException;
 import com.exo.javabackend.domain.model.Client;
 import com.exo.javabackend.domain.model.ClientParticulier;
 import com.exo.javabackend.domain.model.ClientPro;
 import com.exo.javabackend.domain.model.TypeEnergie;
-import com.exo.javabackend.domain.model.dto.ClientDTO;
+import com.exo.javabackend.domain.model.dto.ClientResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumMap;
@@ -17,9 +18,9 @@ public class CalculateBillingUseCase {
     public CalculateBillingUseCase() {
     }
 
-    public ClientDTO handle(Client client) {
+    public ClientResponseDTO handle(Client client) {
         if (!validerReference(client.getReference())) {
-            throw new IllegalArgumentException("La référence du client est invalide.");
+            throw new BadRequestException("La référence du client est invalide.");
         }
 
         Map<TypeEnergie, Double> montantParEnergie = new EnumMap<>(TypeEnergie.class);
@@ -31,10 +32,10 @@ public class CalculateBillingUseCase {
                 }).sum();
 
         if (client instanceof ClientParticulier particulier) {
-            return new ClientDTO(client.getReference(), particulier.getCivilite(), particulier.getNom(), particulier.getPrenom(), montantParEnergie, sommeTotal);
+            return new ClientResponseDTO(client.getReference(), particulier.getCivilite(), particulier.getNom(), particulier.getPrenom(), montantParEnergie, sommeTotal);
         } else {
             ClientPro pro = (ClientPro) client;
-            return new ClientDTO(client.getReference(), pro.getNumSiret(), pro.getRaisonSociale(), montantParEnergie, sommeTotal);
+            return new ClientResponseDTO(client.getReference(), pro.getNumSiret(), pro.getRaisonSociale(), montantParEnergie, sommeTotal);
         }
     }
 

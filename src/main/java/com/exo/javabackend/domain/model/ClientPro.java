@@ -22,6 +22,9 @@ public class ClientPro extends Client {
         return raisonSociale;
     }
 
+    public Double getCa() {
+        return ca;
+    }
 
     @Override
     public double getTarif(TypeEnergie typeEnergie) {
